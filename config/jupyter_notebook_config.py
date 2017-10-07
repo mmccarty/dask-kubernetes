@@ -1,4 +1,4 @@
-c.NotebookApp.password = u'sha1:af82683fbade:60a8ce88ca12188b3f3d32639792e0dd9d9191c4'
+c.NotebookApp.password = u'sha1:b5357f64f0e1:414c496a53964dc97d33716a949892b2aa69a0cb'
 c.NotebookApp.ip = '0.0.0.0'
 c.NotebookApp.token = ''
 c.NotebookApp.open_browser = False

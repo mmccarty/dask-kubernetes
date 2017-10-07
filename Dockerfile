@@ -17,29 +17,21 @@ RUN bash miniconda.sh -b -p /work/miniconda && rm miniconda.sh
 ENV PATH="/work/bin:/work/miniconda/bin:$PATH"
 
 # Install pydata stack
+COPY environment.yml /app/environment.yml
 RUN conda config --set always_yes yes --set changeps1 no --set auto_update_conda no
-RUN conda install notebook psutil numpy pandas scikit-learn statsmodels pip numba \
-        scikit-image datashader holoviews nomkl matplotlib lz4 tornado
-RUN conda install -c conda-forge fastparquet s3fs zict python-blosc cytoolz dask distributed dask-searchcv gcsfs \
- && conda clean -tipsy \
- && pip install git+https://github.com/dask/dask-glm.git --no-deps\
- && pip install graphviz
-
-RUN conda install -c conda-forge nodejs
-RUN conda install -c conda-forge jupyterlab jupyter_dashboards ipywidgets \
- && jupyter labextension install @jupyter-widgets/jupyterlab-manager \
- && jupyter nbextension enable jupyter_dashboards --py --sys-prefix \
+RUN conda env create -n pangeo --file /app/environment.yml \
+ && rm -rf /opt/conda/pkgs/* \
  && conda clean -tipsy
 
-RUN conda install -c bokeh bokeh \
+ENV PATH /work/miniconda/envs/pangeo/bin:$PATH
+RUN ls /work/miniconda/envs/pangeo/bin
+
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager \
+ && jupyter nbextension enable jupyter_dashboards --py --sys-prefix \
  && jupyter labextension install jupyterlab_bokeh \
  && conda clean -tipsy
 
 RUN npm cache clean
-
-# Optional: Install the master branch of distributed and dask
-RUN pip install git+https://github.com/dask/dask --upgrade --no-deps
-RUN pip install git+https://github.com/dask/distributed --upgrade --no-deps
 
 # Install Tini that necessary to properly run the notebook service in docker
 # http://jupyter-notebook.readthedocs.org/en/latest/public_server.html#docker-cmd
@@ -60,4 +52,3 @@ ENV BASICUSER_UID 1000
 RUN useradd -m -d /work -s /bin/bash -N -u $BASICUSER_UID $BASICUSER \
  && chown $BASICUSER /work \
  && chown $BASICUSER:users -R /work
-
