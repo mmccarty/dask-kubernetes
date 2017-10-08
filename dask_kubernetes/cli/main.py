@@ -4,7 +4,6 @@ import click
 import json
 import logging
 from math import ceil
-import os
 import re
 import shutil
 import subprocess
@@ -75,14 +74,14 @@ def create(ctx, name, settings_file, set, nowait):
     call("gcloud container clusters create {0} --num-nodes {1} --machine-type"
          " {2} --no-async --disk-size {3} {autoscaling} --tags=dask --scopes "
          "https://www.googleapis.com/auth/cloud-platform".format(
-            name, conf['cluster']['num_nodes'], conf['cluster']['machine_type'],
-            conf['cluster']['disk_size'],
+            name, conf['cluster']['num_nodes'],
+            conf['cluster']['machine_type'], conf['cluster']['disk_size'],
             autoscaling=autoscaling))
     get_credentials(name)
     context = get_context_from_cluster(name)
     # specify label for notebook and scheduler
     out = json.loads(check_output('kubectl get nodes --output=json'
-                                 ' --context ' + context))
+                                  ' --context ' + context))
     node0 = out['items'][0]['metadata']['name']
     call('kubectl label nodes {} dask_main=thisone'.format(node0))
     par = pardir(name)
@@ -119,7 +118,8 @@ def wait_until_ready(cluster, context=None, poll_time=3):
         context = get_context_from_settings(cluster)
     while True:
         logger.debug('Polling for services')
-        jupyter, jport, jlport, scheduler, sport, bport = services_in_context(context)
+        jupyter, jport, jlport, scheduler, sport, bport = services_in_context(
+            context)
         if jport and sport:
             break
         time.sleep(poll_time)
@@ -277,7 +277,8 @@ c = Client('{scheduler}:{sport}')
 Live pods:
 {live}
 """
-    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(context)
+    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(
+        context)
     live, _ = get_pods(context)
     par = pardir(cluster)
     print(template.format(jupyter=jupyter, scheduler=scheduler, par=par,
@@ -312,7 +313,8 @@ def services_in_context(context):
                     scheduler_port = port['port']
                 if port['name'] == 'dask-scheduler-bokeh':
                     bokeh_port = port['port']
-    return jupyter, jupyter_port, jupyterl_port, scheduler, scheduler_port, bokeh_port
+    return (jupyter, jupyter_port, jupyterl_port, scheduler, scheduler_port,
+            bokeh_port)
 
 
 def get_pods(context):
@@ -369,19 +371,22 @@ def dashboard(ctx, cluster):
 @click.argument('cluster', required=True)
 def notebook(ctx, cluster):
     context = get_context_from_settings(cluster)
-    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(context)
+    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(
+        context)
     if jupyter and jport:
         webbrowser.open('http://{}:{}'.format(jupyter, jport))
     else:
         logger.info('Notebook service not ready')
 
 
-@cli.command(short_help='Open the remote jupyter-lab application in the browser')
+@cli.command(
+    short_help='Open the remote jupyter-lab application in the browser')
 @click.pass_context
 @click.argument('cluster', required=True)
 def lab(ctx, cluster):
     context = get_context_from_settings(cluster)
-    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(context)
+    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(
+        context)
     if jupyter and jport:
         webbrowser.open('http://{}:{}'.format(jupyter, jlport))
     else:
@@ -393,7 +398,8 @@ def lab(ctx, cluster):
 @click.argument('cluster', required=True)
 def status(ctx, cluster):
     context = get_context_from_settings(cluster)
-    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(context)
+    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(
+        context)
     if scheduler and bport:
         webbrowser.open('http://{}:{}/status'.format(scheduler, bport))
     else:
@@ -410,7 +416,8 @@ def delete(ctx, name):
     region = conf['cluster']['zone']
     zone = '-'.join(region.split('-')[:2])
     context = get_context_from_settings(name)
-    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(context)
+    jupyter, jport, jlport, scheduler, sport, bport = services_in_context(
+        context)
     cmd = "kubectl delete services --all --context {0}".format(context)
     logger.info(cmd)
     call(cmd)
@@ -427,6 +434,7 @@ def delete(ctx, name):
             logger.info(cmd)
             call(cmd)
     call("gcloud container clusters delete {0}".format(name))
+
 
 if __name__ == '__main__':
     start()

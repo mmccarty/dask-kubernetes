@@ -13,7 +13,7 @@ import six
 defaults = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                         'defaults.yaml'))
 template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                        '../kubernetes'))
+                                            '../kubernetes'))
 logger = logging.getLogger(__name__)
 
 
@@ -28,7 +28,8 @@ def required_commands(*commands):
             for command in commands:
                 try:
                     # Unix-specific command lookup
-                    subprocess.check_output("which {}".format(command), shell=True)
+                    subprocess.check_output(
+                        "which {}".format(command), shell=True)
                 except subprocess.CalledProcessError:
                     logger.error("Required command does not exist: {}".format(
                         command))

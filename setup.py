@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 from io import open
-import re
-from setuptools import find_packages, setup
+from setuptools import setup
 
 with open('README.md', encoding='utf-8') as f:
     readme = f.read()

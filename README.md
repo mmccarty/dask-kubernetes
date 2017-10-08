@@ -1,3 +1,15 @@
+Pangeo's Kubernetes and Dask Distributed Cluster Setup
+=========
+
+This repo is a fork of [dask/dask-kubernetes](https://github.com/dask/dask-kubernetes).
+It is intended to be a beta level interface to the Google Cloud Platform for the
+[Pangeo](https://pangeo-data.github.io/) project.
+
+- [Docker Image](https://hub.docker.com/r/pangeo/dask-kubernetes/)
+- [Documentation Issue](https://github.com/pangeo-data/pangeo-discussion/issues/16)
+
+-------
+
 # Kubernetes provisioning of a Dask Distributed cluster
 
 This repo hosts some sample configuration to set up Kubernetes containerized
@@ -33,7 +45,7 @@ with all the necessary tools to run our cluster, in particular:
 
 This image will be used to run 3 types of services:
 
-- the `jupyter notebook` server, protected by password `jupyter`. This password is defined
+- the `jupyter notebook` server, protected by password `pangeo`. This password is defined
 in conf/jupyter_notebook_config.py; to change it, you will need to rebuild this image
 and point the kubernetes definitions to the new version.
 - the `dask-scheduler` service,
