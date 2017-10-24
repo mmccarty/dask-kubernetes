@@ -30,3 +30,13 @@ spec:
           securityContext:
             runAsUser: 1000
           workingDir: /work
+          volumeMounts:
+            - mountPath: /data/newman-met-ensemble
+              name: newman-met-ensemble
+              readOnly: true
+      volumes:
+        - name: newman-met-ensemble
+          # This GCE PD must already exist.
+          gcePersistentDisk:
+            pdName: newman-met-ensemble
+            fsType: ext4
