@@ -33,5 +33,16 @@ spec:
               cpu: {{scheduler.cpus}}
               memory: {{scheduler.memory}}
           imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /data/newman-met-ensemble
+              name: newman-met-ensemble
+              readOnly: true
+      volumes:
+        - name: newman-met-ensemble
+          # This GCE PD must already exist.
+          gcePersistentDisk:
+            pdName: newman-met-ensemble
+            fsType: ext4
+            readOnly: true
       nodeSelector:
         dask_main: "thisone"
