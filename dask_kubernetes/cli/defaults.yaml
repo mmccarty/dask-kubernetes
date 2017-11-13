@@ -1,8 +1,8 @@
 cluster:
-  num_nodes: 2
-  machine_type: n1-standard-2
+  num_nodes: 3
+  machine_type: n1-standard-8
   disk_size: 50
-  zone: us-east1-b
+  zone: us-central1-a
   autoscaling: False
   min_nodes: 2
   max_nodes: 32
@@ -20,7 +20,7 @@ scheduler:
   http_port: 9786
   bokeh_port: 8787
 workers:
-  count: 2
+  count: 8
   cpus_per_worker: 1.8
   memory_per_worker: 6800Mi
   mem_factor: 0.95
