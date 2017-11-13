@@ -42,5 +42,6 @@ spec:
           gcePersistentDisk:
             pdName: newman-met-ensemble
             fsType: ext4
+            readOnly: true
       nodeSelector:
         dask_main: "thisone"
