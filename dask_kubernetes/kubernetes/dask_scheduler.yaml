@@ -34,14 +34,14 @@ spec:
               memory: {{scheduler.memory}}
           imagePullPolicy: Always
           volumeMounts:
-            - mountPath: /data/newman-met-ensemble
-              name: newman-met-ensemble
+            - mountPath: /data/gfdl-cm2-6
+              name: gfdl-cm2-6
               readOnly: true
       volumes:
-        - name: newman-met-ensemble
+        - name: gfdl-cm2-6
           # This GCE PD must already exist.
           gcePersistentDisk:
-            pdName: newman-met-ensemble
+            pdName: gfdl-cm2-6
             fsType: ext4
             readOnly: true
       nodeSelector:
