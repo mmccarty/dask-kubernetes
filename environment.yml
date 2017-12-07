@@ -1,4 +1,4 @@
-name: pangeo
+name: pangeo-dask-k8s
 channels:
   - conda-forge
 dependencies:
